@@ -1,26 +1,32 @@
-
-/**
- * Démarrer une partie
- * Calculer le score :
- * Si 1 quille tombe -> score += valeur
- * Si 1+ quilles tombent -> score += nombre de quilles
- * Ajouter la règle de fin de partie : exactement 50 points
- * Si le score dépasse 50 -> le score = 25 points
- * Si trois lancés d'affilé ne touchent aucune quille -> Défaite
- */
-
 export class Molkky {
   constructor() {
     this.score = 0;
+    this.missCount = 0;
   }
   getScore() {
     return this.score;
   }
-  throw(array) {
-    if (array.length === 1) {
-      this.score += array[0];
-      return;
-    }
-    this.score += array.length;
+  hitOnePin(number) {
+    this.updateScore(number);
+  }
+  hitPins(pinsCount) {
+    this.updateScore(pinsCount);
+  }
+  missPins() {
+    this.missCount ++;
+  }
+  updateScore(scoreToAdd) {
+    this.score += scoreToAdd;
+    this.applyPenalityIfScoreGoesBeyond50();
+    this.missCount = 0;
+  }
+  applyPenalityIfScoreGoesBeyond50() {
+    if (this.score > 50) this.score = 25;
+  }
+  win() {
+    return this.score === 50;
+  }
+  lose() {
+    return this.missCount >=3;
   }
 }
