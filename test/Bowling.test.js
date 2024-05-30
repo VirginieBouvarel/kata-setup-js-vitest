@@ -39,12 +39,14 @@
  * butunclebob.com/files/downloads/Bowling%20Game%20Kata.ppt
  */
 
-import { describe, it, expect } from 'vitest';
-import { kata } from '../src/Bowling';
+import { describe, expect, it } from 'vitest';
+import { Game } from '../src/Bowling';
 
 describe('Bowling', () => {
-  it('should return true', () => {
-    expect(kata()).toBe(true);
+  it('should score 0 before the start of the game', () => {
+    const game = new Game;
+    expect(game.score()).toBe(0);
   })
 });
+
 

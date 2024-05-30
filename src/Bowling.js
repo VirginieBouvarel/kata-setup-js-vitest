@@ -1,4 +1,6 @@
 
-export const kata =  () => {
-  return false;
-};
+export class Game {
+  score() {
+    return 0;
+  }
+}
