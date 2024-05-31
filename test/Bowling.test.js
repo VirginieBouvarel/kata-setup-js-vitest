@@ -45,8 +45,24 @@ import { Game } from '../src/Bowling';
 describe('Bowling', () => {
   it('should score 0 before the start of the game', () => {
     const game = new Game;
-    expect(game.score()).toBe(0);
-  })
+    expect(game.getScore()).toBe(0);
+  });
+  it('should score 9 for a round with 8 pins knocked down at the first roll and 1 at the second', () => {
+    const game = new Game;
+    game.playARound([8,1]);
+    expect(game.getScore()).toBe(9);
+  });
+  it('should score 7 for a round with 0 pin knocked down at the first roll and 7 at the second', () => {
+    const game = new Game;
+    game.playARound([0,7]);
+    expect(game.getScore()).toBe(7);
+  });
+  it('should score 16 for a round with 0 pin knocked down at the first roll and 7 at the second after a round with 8 pins knocked down at the first roll and 1 at the second', () => {
+    const game = new Game;
+    game.playARound([8,1]);
+    game.playARound([0,7]);
+    expect(game.getScore()).toBe(16);
+  });
 });
 
 
