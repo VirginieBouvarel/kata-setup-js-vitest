@@ -1,9 +1,9 @@
-import { describe, it, expect } from 'vitest';
-import { kata } from '../src/Kata';
+import { describe, expect, it } from 'vitest';
+
 
 describe('Kata Title', () => {
   it('should return true', () => {
-    expect(kata()).toBe(true);
+    expect(true).toBe(false);
   })
 });
 
