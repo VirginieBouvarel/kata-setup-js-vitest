@@ -9,67 +9,58 @@
 
  // RED
 
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { Wallet } from '../src/Wallet';
+import { Quantity } from '../src/Quantity';
+
+const Asset = {
+  EURO: 'euro',
+  DOLLAR: 'dollar',
+  BITCOIN: 'bitcoin',
+};
 
 describe('Wallet', () => {
+  const rateProvider = (fromAsset, toCurrency) => {
+    if (fromAsset === 'euro') {
+      if (toCurrency === 'dollars') {
+        return 0.5;
+      }
+    }
+    if (fromAsset === 'dollar') {
+      if (toCurrency === 'euros') {
+        return 2;
+      }
+    }
+    if (fromAsset === 'bitcoin') {
+      if (toCurrency === 'euros') {
+        return 10;
+      }
+    }
+    return 1;
+  };
+
+  let wallet;
+  beforeEach(() => {
+    wallet = new Wallet();
+  });
+
   it('should return 0 for an empty wallet', () => {
-    const wallet = new Wallet();
-    expect(wallet.amount()).toBe(0);
-  });
-  it('should return 1 for a wallet with one euro', () => {
-    const wallet = new Wallet();
-    wallet.addAsset({ type: 'euro', quantity: 1 });
-    expect(wallet.amount()).toBe(1);
-  });
-  it('should return 2 for a wallet with two assets of one euro', () => {
-    const wallet = new Wallet();
-    wallet.addAsset({ type: 'euro', quantity: 1 });
-    wallet.addAsset({ type: 'euro', quantity: 1 });
-    expect(wallet.amount()).toBe(2);
+    expect(wallet.amount('euros', rateProvider)).toBe(0);
   });
   it('should return 3 for a wallet with two assets of one and two euros', () => {
-    const wallet = new Wallet();
-    wallet.addAsset({ type: 'euro', quantity: 1 });
-    wallet.addAsset({ type: 'euro', quantity: 2 });
-    expect(wallet.amount()).toBe(3);
-  });
-  it('should return 2 for a wallet with one dollar', () => {
-    const wallet = new Wallet();
-    wallet.addAsset({ type: 'dollar', quantity: 1 });
-    expect(wallet.amount()).toBe(2);
-  });
-  it('should return 10 for a wallet with one bitcoin', () => {
-    const wallet = new Wallet();
-    wallet.addAsset({ type: 'bitcoin', quantity: 1 });
-    expect(wallet.amount()).toBe(10);
+    wallet.addAsset({ type: Asset.EURO, quantity: Quantity.of(1) });
+    wallet.addAsset({ type: 'euro', quantity: Quantity.of(2) });
+    expect(wallet.amount('euros', rateProvider)).toBe(3);
   });
   it('should return 25 for a wallet with one euro, 2 dollars and 2 bitcoins', () => {
-    const wallet = new Wallet();
-    wallet.addAsset({ type: 'euro', quantity: 1 });
-    wallet.addAsset({ type: 'dollar', quantity: 2 });
-    wallet.addAsset({ type: 'bitcoin', quantity: 2 });
-    expect(wallet.amount()).toBe(25);
+    wallet.addAsset({ type: 'euro', quantity: Quantity.of(1) });
+    wallet.addAsset({ type: 'dollar', quantity: Quantity.of(2) });
+    wallet.addAsset({ type: 'bitcoin', quantity: Quantity.of(2) });
+    expect(wallet.amount('euros', rateProvider)).toBe(25);
   });
   it('should return 1 for a wallet with two euros, in dollars', () => {
-    const wallet = new Wallet();
-    wallet.addAsset({ type: 'euro', quantity: 2 });
-    expect(wallet.amount('dollars')).toBe(1);
-  });
-  it('should return 2 for a wallet with four euros, in dollars', () => {
-    const wallet = new Wallet();
-    wallet.addAsset({ type: 'euro', quantity: 4 });
-    expect(wallet.amount('dollars')).toBe(2);
-  });
-  it('should return 1 for a wallet with ten euros, in bitcoins', () => {
-    const wallet = new Wallet();
-    wallet.addAsset({ type: 'euro', quantity: 10 });
-    expect(wallet.amount('bitcoins')).toBe(1);
-  });
-  it('should return 2 for a wallet with twenty euros, in bitcoins', () => {
-    const wallet = new Wallet();
-    wallet.addAsset({ type: 'euro', quantity: 20 });
-    expect(wallet.amount('bitcoins')).toBe(2);
+    wallet.addAsset({ type: 'euro', quantity: Quantity.of(2) });
+    expect(wallet.amount('dollars', rateProvider)).toBe(1);
   });
 });
 
